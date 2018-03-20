@@ -17,10 +17,10 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
         repos_raw = r1.read().decode("utf-8")
         conn.close()
 
-        repos = json.loads(repos_raw)
+        drugs = json.loads(repos_raw)
 
-        repo = repos['results']
-
+        drugs = drugs['results']
+        drugs_id = drugs[0]['id']
         print("The drug id is", repo[0]['openfda']['spl_id'])
         print("The drug purpose is", repo[0]['purpose'])
         print("The manufacturer name is", repo[0]['openfda']['manufacturer_name'])
@@ -43,7 +43,7 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
         self.end_headers()
 
         # Send message back to client
-        message = repos['results']
+        message = repo_id
         # Write content as utf-8 data
         self.wfile.write(bytes(message, "utf8"))
         return
