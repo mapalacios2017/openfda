@@ -2,7 +2,7 @@ import http.server
 import socketserver
 import json
 
-PORT = 8000
+PORT = 8006
 
 # HTTPRequestHandler class
 class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
@@ -20,20 +20,9 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
         drugs = json.loads(repos_raw)
 
         drugs = drugs['results']
-        drugs_id = drugs[0]['id']
-        print("The drug id is", repo[0]['openfda']['spl_id'])
-        print("The drug purpose is", repo[0]['purpose'])
-        print("The manufacturer name is", repo[0]['openfda']['manufacturer_name'])
-        print("The Ids for the rest of the drugs are:")
-        print("The drug id is", repo[1]['id'])
-        print("The drug id is", repo[2]['id'])
-        print("The drug id is", repo[3]['id'])
-        print("The drug id is", repo[4]['id'])
-        print("The drug id is", repo[5]['id'])
-        print("The drug id is", repo[6]['id'])
-        print("The drug id is", repo[7]['id'])
-        print("The drug id is", repo[8]['id'])
-        print("The drug id is", repo[9]['id'])
+        drugs_id = "<ol>" + drugs[0]['id'] + "<ol>" + drugs[1]['id']+ "<ol>" + drugs[2]['id']+ "<ol>" + drugs[3]['id']+ "<ol>" + drugs[4]['id']+ "<ol>" + drugs[5]['id']+ "<ol>" + drugs[6]['id']+ "<ol>" + drugs[7]['id']+ "<ol>" + drugs[8]['id']+ "<ol>" + drugs[9]['id']
+
+
 
         # Send response status code
         self.send_response(200)
@@ -43,7 +32,7 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
         self.end_headers()
 
         # Send message back to client
-        message = repo_id
+        message = drugs_id
         # Write content as utf-8 data
         self.wfile.write(bytes(message, "utf8"))
         return
