@@ -20,7 +20,16 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
         drugs = json.loads(repos_raw)
 
         drugs = drugs['results']
-        drugs_id = "<ol>" + drugs[0]['id'] + "<ol>" + drugs[1]['id']+ "<ol>" + drugs[2]['id']+ "<ol>" + drugs[3]['id']+ "<ol>" + drugs[4]['id']+ "<ol>" + drugs[5]['id']+ "<ol>" + drugs[6]['id']+ "<ol>" + drugs[7]['id']+ "<ol>" + drugs[8]['id']+ "<ol>" + drugs[9]['id']
+        drugs_id = "<ol>" + drugs[0]['id'] + "</ol>" + \
+                   "<ol>" + drugs[1]['id'] + "</ol>" + \
+                   "<ol>" + drugs[2]['id'] + "</ol>" + \
+                   "<ol>" + drugs[3]['id'] + "</ol>" + \
+                   "<ol>" + drugs[4]['id'] + "</ol>" + \
+                   "<ol>" + drugs[5]['id'] + "</ol>" + \
+                   "<ol>" + drugs[6]['id'] + "</ol>" + \
+                   "<ol>" + drugs[7]['id'] + "</ol>" + \
+                   "<ol>" + drugs[8]['id'] + "</ol>" + \
+                   "<ol>" + drugs[9]['id'] + "</ol>"
 
 
 
