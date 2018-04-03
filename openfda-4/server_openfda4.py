@@ -1,6 +1,5 @@
 import http.server
 import socketserver
-import json
 
 PORT = 8006
 
@@ -16,11 +15,10 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
         self.send_header('Content-type','text/html')
         self.end_headers()
 
-        with open("search.html") as file_form:
-            message = file_form.read()
+        with open("search.html") as f:
+            form = f.read()
 
-        # Write content as utf-8 data
-        self.wfile.write(bytes(message, "utf8"))
+
         return
 
 Handler = http.server.SimpleHTTPRequestHandler
@@ -30,4 +28,3 @@ httpd = socketserver.TCPServer(("", PORT), Handler)
 print("serving at port", PORT)
 httpd.serve_forever()
 
-# https://github.com/joshmaker/simple-python-webserver/blob/master/server.py
