@@ -14,9 +14,16 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
         # Send headers
         self.send_header('Content-type','text/html')
         self.end_headers()
+        if self.path == "/":
+            with open("search.html") as f:
+                message = f.read()
+                self.wfile.write(bytes(message, "utf8"))
 
-        with open("search.html") as f:
-            form = f.read()
+        elif "search" in self.path:
+            params = self.path.split("?")[1]
+            drug = params.split("&")[0].split("=")[1]
+            limit = params.split("&")[0].split("=")[1]
+            self.wfile.write(bytes(drug + " " + limit, "utf8"))
 
 
         return
