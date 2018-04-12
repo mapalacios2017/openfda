@@ -67,11 +67,22 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
         return
 
     def GET_drugs_list(self):
-        listDrugs = "<ul>"
-        for drug in drug_info:
-            listDrugs += "<li>" + drug['id']
+        headers = {'User-Agent': 'http-client'}
+
+        conn = http.client.HTTPSConnection("api.fda.gov")
+        conn.request("GET", '/drug/label.json', None,headers)
+        r1 = conn.getresponse()
+        print(r1.status, r1.reason)
+        repos_raw = r1.read().decode("utf-8")
+        conn.close()
+
+        drugs = json.loads(repos_raw)
+        listDrugs = "<ul>" + " "
+
+        for drug in drugs:
+            listDrugs += "<li>" + drugs['id']
             if 'active_ingredient' in drug:
-                listDrugs += " " + drug['active_ingredient']
+                listDrugs += " " + drugs['active_ingredient']
             listDrugs += "</li>"
         listDrugs += "</ul>"
 
