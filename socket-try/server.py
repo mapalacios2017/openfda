@@ -64,33 +64,32 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
 
             self.wfile.write(bytes(total_drugs, "utf8"))
 
-        return
+        elif "druglist" in self.path:
+            headers = {'User-Agent': 'http-client'}
 
-    def GET_drugs_list(self):
-        self.send_response(200)
+            conn = http.client.HTTPSConnection("api.fda.gov")
+            conn.request("GET", '/drug/label.json', None, headers)
+            r1 = conn.getresponse()
+            print(r1.status, r1.reason)
+            repos_raw = r1.read().decode("utf-8")
+            conn.close()
 
-        self.send_header('Content-type', 'text/html')
-        self.end_headers()
-        headers = {'User-Agent': 'http-client'}
+            drugs = json.loads(repos_raw)
+            druglist = "<html>" + \
+                       "<body>" + \
+                       "<ul>"
 
-        conn = http.client.HTTPSConnection("api.fda.gov")
-        conn.request("GET", '/drug/label.json', None,headers)
-        r1 = conn.getresponse()
-        print(r1.status, r1.reason)
-        repos_raw = r1.read().decode("utf-8")
-        conn.close()
+            for drug in drugs['results']:
+                druglist += "<li>" + drug['id']
+                if 'active_ingredient' in drug:
+                    druglist += " " + drug['active_ingredient']
+                druglist += "</li>"
+            druglist += "</ul>" + \
+                        "</body>" + \
+                        "</html>"
 
-        drugs = json.loads(repos_raw)
-        listDrugs = "<ul>"
+            self.wfile.write(bytes(druglist, "utf8"))
 
-        for drug in drugs:
-            listDrugs += "<li>" + drugs['id']
-            if 'active_ingredient' in drug:
-                listDrugs += " " + drugs['active_ingredient']
-            listDrugs += "</li>"
-        listDrugs += "</ul>"
-
-        return listDrugs
 
 Handler = http.server.SimpleHTTPRequestHandler
 Handler = testHTTPRequestHandler
