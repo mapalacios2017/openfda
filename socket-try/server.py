@@ -81,8 +81,6 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
 
             for drug in drugs['results']:
                 druglist += "<li>" + drug['id']
-                if 'active_ingredient' in drug:
-                    druglist += " " + drug['active_ingredient']
                 druglist += "</li>"
             druglist += "</ul>" + \
                         "</body>" + \
