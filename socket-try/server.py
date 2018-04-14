@@ -68,7 +68,7 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
             headers = {'User-Agent': 'http-client'}
 
             conn = http.client.HTTPSConnection("api.fda.gov")
-            conn.request("GET", '/drug/label.json', None, headers)
+            conn.request("GET", '/drug/label.json' + "?limit=100", None, headers)
             r1 = conn.getresponse()
             print(r1.status, r1.reason)
             repos_raw = r1.read().decode("utf-8")
@@ -82,11 +82,41 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
             for drug in drugs['results']:
                 druglist += "<li>" + drug['id']
                 druglist += "</li>"
+
             druglist += "</ul>" + \
                         "</body>" + \
                         "</html>"
 
             self.wfile.write(bytes(druglist, "utf8"))
+
+        elif "companylist" in self.path:
+            headers = {'User-Agent': 'http-client'}
+
+            conn = http.client.HTTPSConnection("api.fda.gov")
+            conn.request("GET", '/drug/label.json?limit=100', None, headers)
+            r1 = conn.getresponse()
+            print(r1.status, r1.reason)
+            repos_raw = r1.read().decode("utf-8")
+            conn.close()
+
+            drugs = json.loads(repos_raw)
+
+            companylist = "<html>" + \
+                          "<body>" + \
+                          "<ul>"
+
+            for drug in drugs['results']:
+                if 'manufacturer_name' in drug['openfda']:
+                    companylist += "<li>" + drug['openfda']['manufacturer_name'][0]
+                    companylist += "</li>"
+
+            companylist += "</ul>" + \
+                           "</body>" + \
+                           "</html>"
+
+            self.wfile.write(bytes(companylist, "utf8"))
+
+        return
 
 
 Handler = http.server.SimpleHTTPRequestHandler
