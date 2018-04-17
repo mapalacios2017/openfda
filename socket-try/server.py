@@ -34,13 +34,22 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
             conn.close()
 
             drugs = json.loads(repos_raw)
-            total_drugs = ""
-            for drug in drugs['results']:
-                drugs_info = "<ol>" + "Drug Id: " + drug['id'] + "</ol>"
-                total_drugs = total_drugs + drugs_info
+            if drug not in drugs:
+                self.send_response(404)
+
+                self.send_header('Content-type', 'text/html')
+                self.end_headers()
+                with open("Error.html") as f:
+                    message = f.read()
+                    self.wfile.write(bytes(message, "utf8"))
+            else:
+                total_drugs = ""
+                for drug in drugs['results']:
+                    drugs_info = "<ol>" + "Drug Id: " + drug['id'] + "</ol>"
+                    total_drugs = total_drugs + drugs_info
 
 
-            self.wfile.write(bytes(total_drugs, "utf8"))
+                self.wfile.write(bytes(total_drugs, "utf8"))
 
         elif "searchCompany" in self.path:
             params = self.path.split("?")[1]
@@ -65,10 +74,12 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
             self.wfile.write(bytes(total_drugs, "utf8"))
 
         elif "druglist" in self.path:
+            params = self.path.split("?")[1]
+            limit = params.split("&")[0].split("=")[1]
             headers = {'User-Agent': 'http-client'}
 
             conn = http.client.HTTPSConnection("api.fda.gov")
-            conn.request("GET", '/drug/label.json' + "?limit=100", None, headers)
+            conn.request("GET", '/drug/label.json' + "?limit=" + limit, None, headers)
             r1 = conn.getresponse()
             print(r1.status, r1.reason)
             repos_raw = r1.read().decode("utf-8")
@@ -90,10 +101,12 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
             self.wfile.write(bytes(druglist, "utf8"))
 
         elif "companylist" in self.path:
+            params = self.path.split("?")[1]
+            limit = params.split("&")[0].split("=")[1]
             headers = {'User-Agent': 'http-client'}
 
             conn = http.client.HTTPSConnection("api.fda.gov")
-            conn.request("GET", '/drug/label.json?limit=100', None, headers)
+            conn.request("GET", '/drug/label.json?limit=' + limit, None, headers)
             r1 = conn.getresponse()
             print(r1.status, r1.reason)
             repos_raw = r1.read().decode("utf-8")
@@ -108,13 +121,49 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
             for drug in drugs['results']:
                 if 'manufacturer_name' in drug['openfda']:
                     companylist += "<li>" + drug['openfda']['manufacturer_name'][0]
-                    companylist += "</li>"
+                else:
+                    companylist += "<li>" + "Information not avaliable"
+                companylist += "</li>"
+
 
             companylist += "</ul>" + \
                            "</body>" + \
                            "</html>"
 
             self.wfile.write(bytes(companylist, "utf8"))
+
+
+        elif "warninglist" in self.path:
+            params = self.path.split("?")[1]
+            limit = params.split("&")[0].split("=")[1]
+            headers = {'User-Agent': 'http-client'}
+
+            conn = http.client.HTTPSConnection("api.fda.gov")
+            conn.request("GET", '/drug/label.json?limit=' + limit, None, headers)
+            r1 = conn.getresponse()
+            print(r1.status, r1.reason)
+            repos_raw = r1.read().decode("utf-8")
+            conn.close()
+
+            drugs = json.loads(repos_raw)
+
+            warninglist = "<html>" + \
+                          "<body>" + \
+                          "<ul>"
+
+            for drug in drugs['results']:
+                if 'warnings' in drug:
+                    warninglist += "<li>" + "Drug Id: " + drug['id'] + ", " + drug['warnings'][0]
+                else:
+                    warninglist += "<li>" + "Information not avaliable"
+                warninglist += "</li>"
+
+            warninglist += "</ul>" + \
+                        "</body>" + \
+                        "</html>"
+
+            self.wfile.write(bytes(warninglist, "utf8"))
+
 
         return
 

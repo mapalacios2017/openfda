@@ -6,15 +6,33 @@
 
 <h1>OpenFDA Final Project</h1>
 
-<a href="druglist">List Drugs</a><br>
-<a href="companylist">List Companies</a><br>
+<a><big><u>List Drugs</u></big></a><br>
+<form action="druglist">
+    Limit: <input name="limit" type="text"><br>
+    <input type="submit">
+</form>
 <br>
+<a><big><u>List Companies</u></big></a><br>
+<form action="companylist">
+    Limit: <input name="limit" type="text"><br>
+    <input type="submit">
+</form>
+<br>
+<a><big><u>List Warnings</u></big></a><br>
+<form action="warninglist">
+    Limit: <input name="limit" type="text"><br>
+    <input type="submit">
+</form>
+<br>
+
+<a><big><u>Drug search</u></big></a><br>
 <form action="searchDrug">
     Active Ingredient: <input name="active_ingredient" type="text"><br>
     Limit: <input name="limit" type="text"><br>
     <input type="submit">
 </form>
 <br>
+<a><big><u>Company search</u></big></a><br>
 <form action="searchCompany">
     Company name: <input name="company" type="text"><br>
     Limit: <input name="limit" type="text"><br>
