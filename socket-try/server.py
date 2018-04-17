@@ -39,7 +39,6 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
                 drugs_info = "<ol>" + "Drug Id: " + drug['id'] + "</ol>"
                 total_drugs = total_drugs + drugs_info
 
-
             self.wfile.write(bytes(total_drugs, "utf8"))
 
 
@@ -156,6 +155,12 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
 
             self.wfile.write(bytes(warninglist, "utf8"))
 
+        else:
+            self.send_response(404)
+            with open("Error.html") as f:
+
+                message = f.read()
+                self.wfile.write(bytes(message, "utf8"))
 
         return
 
