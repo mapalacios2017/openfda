@@ -34,22 +34,14 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
             conn.close()
 
             drugs = json.loads(repos_raw)
-            if drug not in drugs:
-                self.send_response(404)
-
-                self.send_header('Content-type', 'text/html')
-                self.end_headers()
-                with open("Error.html") as f:
-                    message = f.read()
-                    self.wfile.write(bytes(message, "utf8"))
-            else:
-                total_drugs = ""
-                for drug in drugs['results']:
-                    drugs_info = "<ol>" + "Drug Id: " + drug['id'] + "</ol>"
-                    total_drugs = total_drugs + drugs_info
+            total_drugs = ""
+            for drug in drugs['results']:
+                drugs_info = "<ol>" + "Drug Id: " + drug['id'] + "</ol>"
+                total_drugs = total_drugs + drugs_info
 
 
-                self.wfile.write(bytes(total_drugs, "utf8"))
+            self.wfile.write(bytes(total_drugs, "utf8"))
+
 
         elif "searchCompany" in self.path:
             params = self.path.split("?")[1]
