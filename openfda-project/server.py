@@ -157,7 +157,7 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
 
         else:
             self.send_response(404)
-            with open("Error.html") as f:
+            with open("error.html") as f:
 
                 message = f.read()
                 self.wfile.write(bytes(message, "utf8"))
