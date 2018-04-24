@@ -56,15 +56,18 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
             conn.close()
 
             drugs = json.loads(repos_raw)
-            total_drugs = ""
+            searchcompan = "<ol>"
+
             for drug in drugs['results']:
-                drugs_info = "<ol>" + "Drug Id: " + drug['id'] + "</ol>"
-                total_drugs = total_drugs + drugs_info
+                searchcompan += "<li>" + drug['id']
+                searchcompan += "</li>"
+
+            searchcompan += "</ol>"
 
 
-            self.wfile.write(bytes(total_drugs, "utf8"))
+            self.wfile.write(bytes(searchcompan, "utf8"))
 
-        elif "druglist" in self.path:
+        elif "listDrugs" in self.path:
             params = self.path.split("?")[1]
             limit = params.split("&")[0].split("=")[1]
             headers = {'User-Agent': 'http-client'}
@@ -91,7 +94,7 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
 
             self.wfile.write(bytes(druglist, "utf8"))
 
-        elif "companylist" in self.path:
+        elif "listCompanies" in self.path:
             params = self.path.split("?")[1]
             limit = params.split("&")[0].split("=")[1]
             headers = {'User-Agent': 'http-client'}
@@ -124,7 +127,7 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
             self.wfile.write(bytes(companylist, "utf8"))
 
 
-        elif "warninglist" in self.path:
+        elif "listWarnings" in self.path:
             params = self.path.split("?")[1]
             limit = params.split("&")[0].split("=")[1]
             headers = {'User-Agent': 'http-client'}
@@ -155,12 +158,7 @@ class testHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
 
             self.wfile.write(bytes(warninglist, "utf8"))
 
-        else:
-            self.send_response(404)
-            with open("error.html") as f:
 
-                message = f.read()
-                self.wfile.write(bytes(message, "utf8"))
 
         return
 
